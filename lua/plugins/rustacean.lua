@@ -27,9 +27,8 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "ron", "rust", "toml" })
-      end
+      opts.ensure_installed = opts.ensure_installed or {}
+      vim.list_extend(opts.ensure_installed, { "ron", "rust", "toml" })
     end,
   },
 
@@ -38,15 +37,14 @@ return {
     "williamboman/mason.nvim",
     optional = true,
     opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "codelldb" })
-      end
+      opts.ensure_installed = opts.ensure_installed or {}
+      vim.list_extend(opts.ensure_installed, { "codelldb" })
     end,
   },
 
   {
     "mrcjkb/rustaceanvim",
-    --version = "^3", -- Recommended
+    version = '^4', -- Recommended
     ft = { "rust" },
     opts = {
       server = {
@@ -54,21 +52,11 @@ return {
           -- register which-key mappings
           local wk = require("which-key")
           wk.register({
-            ["<leader>cR"] = {
-              function()
-                vim.cmd.RustLsp("codeAction")
-              end,
-              "Code Action",
-            },
-            ["<leader>dr"] = {
-              function()
-                vim.cmd.RustLsp("debuggables")
-              end,
-              "Rust debuggables",
-            },
+            ["<leader>cR"] = { function() vim.cmd.RustLsp("codeAction") end, "Code Action" },
+            ["<leader>dr"] = { function() vim.cmd.RustLsp("debuggables") end, "Rust debuggables" },
           }, { mode = "n", buffer = bufnr })
         end,
-        settings = {
+        default_settings = {
           -- rust-analyzer language server configuration
           ["rust-analyzer"] = {
             cargo = {
@@ -92,11 +80,13 @@ return {
             },
           },
         },
-      },
+      }
     },
     config = function(_, opts)
-      vim.g.rustaceanvim = vim.tbl_deep_extend("force", {}, opts or {})
-    end,
+      vim.g.rustaceanvim = vim.tbl_deep_extend("force",
+        {},
+        opts or {})
+    end
   },
 
   -- Correctly setup lspconfig for Rust 🚀
@@ -132,13 +122,12 @@ return {
   {
     "nvim-neotest/neotest",
     optional = true,
-    dependencies = {
-      "rouge8/neotest-rust",
-    },
-    opts = {
-      adapters = {
-        ["neotest-rust"] = {},
-      },
-    },
+    opts = function(_, opts)
+      opts.adapters = opts.adapters or {}
+      vim.list_extend(opts.adapters, {
+        require('rustaceanvim.neotest'),
+      })
+    end
   },
+
 }

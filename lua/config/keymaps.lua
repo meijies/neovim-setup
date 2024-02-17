@@ -3,7 +3,7 @@
 -- Add any additional keymaps here
 
 local Util = require("lazyvim.util")
-
-vim.keymap.set("n", "<C-/>", function()
+vim.keymap.set({ "n", "v", "i" }, "<C-/>", function()
   Util.terminal(nil, { border = "rounded" })
 end, { desc = "Term with border" })
+
