@@ -52,7 +52,7 @@ return {
           -- register which-key mappings
           local wk = require("which-key")
           wk.register({
-            ["<leader>cR"] = { function() vim.cmd.RustLsp("codeAction") end, "Code Action" },
+            ["<leader>a"] = { function() vim.lsp.buf.code_action() end, "Code Action" },
             ["<leader>dr"] = { function() vim.cmd.RustLsp("debuggables") end, "Rust debuggables" },
           }, { mode = "n", buffer = bufnr })
         end,
